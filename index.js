@@ -42,6 +42,12 @@ async function run() {
 			res.json(result);
 		});
 
+		app.get("/users", async (req, res) => {
+			const cursor = userCollection.find({});
+			const users = await cursor.toArray();
+			res.send(users);
+		});
+
 		//insert google login user
 		app.put("/user", async (req, res) => {
 			const user = req.body;
