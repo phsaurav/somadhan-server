@@ -21,12 +21,35 @@ async function run() {
 		console.log("Connected to Database!");
 		const database = client.db("somadhan");
 		const userCollection = database.collection("users");
+		const issueCollection = database.collection("issueCollection");
+
+		//*POST Issue
+		app.post("/issue", async (req, res) => {
+			const issue = req.body;
+			const result = await issueCollection.insertOne(issue);
+			res.send(result);
+		});
+		//*GET Admin Issues
+		app.post("/admin/byemail", async (req, res) => {
+			const data = req.body;
+			console.log(data);
+			const query = { adminEmail: data.email, status: data.status };
+			const issues = await issueCollection.find(query).toArray();
+			res.send(issues);
+		});
+		//*GET User Issues
+		app.post("/user/byemail", async (req, res) => {
+			const data = req.body;
+			console.log(data);
+			const query = { userEmail: data.email, status: data.status };
+			const issues = await issueCollection.find(query).toArray();
+			res.send(issues);
+		});
 
 		//*POST A new user in user collection
 		app.post("/users", async (req, res) => {
 			const user = req.body;
 			const result = await userCollection.insertOne(user);
-			console.log(result);
 			res.json(result);
 		});
 
