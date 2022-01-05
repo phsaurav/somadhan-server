@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 5000;
 const { MongoClient } = require("mongodb");
+const ObjectId = require("mongodb").ObjectId;
 
 const cors = require("cors");
 
@@ -63,6 +64,22 @@ async function run() {
 			res.json(result);
 		});
 
+		//*UPDATE Status
+		app.put("/status/:id", async (req, res) => {
+			const id = req.params.id;
+			const status = req.body;
+			const filter = { _id: ObjectId(id) };
+			const options = { upsert: true };
+			const updateDoc = {
+				$set: {
+					status: status.status,
+				},
+			};
+			const result = await issueCollection.updateOne(filter, updateDoc, options);
+			console.log("Updating issue Status");
+			res.json(result);
+		});
+
 		//* Check Admin
 		app.get("/users/:email", async (req, res) => {
 			const email = req.params.email;
@@ -74,6 +91,13 @@ async function run() {
 				isAdmin = true;
 			}
 			res.json({ admin: isAdmin });
+		});
+		//*DELETE Single Data
+		app.delete("/issue/:id", async (req, res) => {
+			const id = req.params.id;
+			const query = { _id: ObjectId(id) };
+			const result = await issueCollection.deleteOne(query);
+			res.json(result);
 		});
 	} finally {
 		// await client.close();
