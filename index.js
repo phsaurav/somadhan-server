@@ -54,6 +54,13 @@ async function run() {
 			res.json(result);
 		});
 
+		//*POST A new user in user collection
+		app.get("/issues", async (req, res) => {
+			const cursor = issueCollection.find({});
+			const issues = await cursor.toArray();
+			res.json(issues);
+		});
+
 		//*Put Google Login user in user collection
 		app.put("/users", async (req, res) => {
 			const user = req.body;
