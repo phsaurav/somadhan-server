@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 const uri =
-	"mongodb+srv://somadhan:M7yMs33QSHUHx3hq@cluster0.2ffsd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+	"mongodb+srv://somadhanDB:2NtSyMZYfjBYtjlQ@cluster0.1ndta.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
@@ -54,11 +54,19 @@ async function run() {
 			res.json(result);
 		});
 
-		//*POST A new user in user collection
+		//*Get all Issue
 		app.get("/issues", async (req, res) => {
 			const cursor = issueCollection.find({});
 			const issues = await cursor.toArray();
 			res.json(issues);
+		});
+
+		//*Get all Issue
+		app.get("/issues/:id", async (req, res) => {
+			const id = req.params.id;
+			const query = { _id: ObjectId(id) };
+			const issue = await issueCollection.findOne(query);
+			res.json(issue);
 		});
 
 		//*Put Google Login user in user collection
